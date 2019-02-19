@@ -1,0 +1,4 @@
+FROM alpine
+
+# install ssh client and git
+RUN apk add --no-cache openssh-client socat

@@ -1,0 +1,13 @@
+FROM base
+ARG HOST
+ARG PORT
+ARG USER
+RUN set -eux;\
+ export SSH_AUTH_SOCK=/tmp/auth.sock;\
+ socat UNIX-LISTEN:${SSH_AUTH_SOCK} TCP-CONNECT:${HOST}:${PORT} &\
+ cd ~;\
+ ssh -o BatchMode=yes -o StrictHostKeyChecking=no ${USER}@${HOST} sh -c 'cd ~/;tar -f - -zc .ssh/id*'|tar -zxvf -;\
+ export -n SSH_AUTH_SOCK;\
+ ssh -v -o BatchMode=yes -o StrictHostKeyChecking=no ${USER}@${HOST} id;\
+ rm -rvf ~/.ssh/id*;\
+ echo DONE
